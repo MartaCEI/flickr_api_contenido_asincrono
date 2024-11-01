@@ -13,7 +13,7 @@ const Home = () => {
     });
     const [country, setCountry] = useState("spain");
     const [currentPage, setCurrentPage] = useState(1);
-    const [error, setError] = useState(null); // Estado para el error
+    const [error, setError] = useState(null); 
 
     useEffect(() => {
         fetchAllData();
@@ -60,7 +60,6 @@ const Home = () => {
         <div className="Galeria-main">
             <h1 className="Galeria-h1">Flickr Api - Galería de Fotos</h1>
 
-            {/* Mostrar el mensaje de error */}
             {error && <p style={{ color: "red" }}>{error}</p>}
 
             <div className="Galeria-botones">
