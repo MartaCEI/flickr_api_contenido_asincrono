@@ -13,6 +13,7 @@ const Home = () => {
     });
     const [country, setCountry] = useState("spain");
     const [currentPage, setCurrentPage] = useState(1);
+    const [error, setError] = useState(null); // Estado para el error
 
     useEffect(() => {
         fetchAllData();
@@ -20,63 +21,73 @@ const Home = () => {
 
     const fetchAllData = async () => {
         try {
+            setError(null);
             const response = await fetch(`${URL}&api_key=${KEY}&tags=${country}&per_page=24&page=${currentPage}&format=json&nojsoncallback=1`);
-            const objeto = await response.json();
 
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+
+            const objeto = await response.json();
             setData(objeto.photos);
             console.log("Este es el objeto fotos", objeto.photos);
         } catch (error) {
-            console.log(error);
+            console.error(error);
+            setError("Hubo un problema al cargar las fotos. Inténtalo de nuevo más tarde.");
         }
-    }
+    };
 
     const handleCountryChange = (newCountry) => {
         setCountry(newCountry);
         setCurrentPage(1);
-    }
+    };
 
     const goToNextPage = () => {
         if (currentPage < data.pages) {
             setCurrentPage(prevPage => prevPage + 1);
         }
-    }
+    };
 
     const goToPreviousPage = () => {
         if (currentPage > 1) {
             setCurrentPage(prevPage => prevPage - 1);
         }
-    }
+    };
 
-    const { pages, total, photo } = data;
+    const { pages, photo } = data;
 
     return (
-        <div>
-            <h1>Galería de Fotos</h1>
-            <div className="pagination-info">
-                <button onClick={() => handleCountryChange("spain")}>España</button>
-                <button onClick={() => handleCountryChange("france")}>Francia</button>
-                <button onClick={() => handleCountryChange("italy")}>Italia</button>
-                <button onClick={() => handleCountryChange("germany")}>Alemania</button>
+        <div className="Galeria-main">
+            <h1 className="Galeria-h1">Flickr Api - Galería de Fotos</h1>
+
+            {/* Mostrar el mensaje de error */}
+            {error && <p style={{ color: "red" }}>{error}</p>}
+
+            <div className="Galeria-botones">
+                <button className="Galeria-btn" onClick={() => handleCountryChange("spain")}>España</button>
+                <button className="Galeria-btn" onClick={() => handleCountryChange("france")}>Francia</button>
+                <button className="Galeria-btn" onClick={() => handleCountryChange("italy")}>Italia</button>
+                <button className="Galeria-btn" onClick={() => handleCountryChange("germany")}>Alemania</button>
             </div>
-            <div className="pagination-info">
-                <p>Total de fotos: {total}</p>
-                <p>Página {currentPage} de {pages}</p>
-                <button onClick={goToPreviousPage} disabled={currentPage === 1}>Anterior</button>
-                <button onClick={goToNextPage} disabled={currentPage === pages}>Siguiente</button>
+            <p className="Galeria-paginacion">Página {currentPage} de {pages}</p>
+            <div className="Galeria-botones-bajos">
+                <button className="Galeria-btn" onClick={goToPreviousPage} disabled={currentPage === 1}>Anterior</button>
+                <button className="Galeria-btn" onClick={goToNextPage} disabled={currentPage === pages}>Siguiente</button>
             </div>
+            
             {photo && photo.length > 0 ? (
-                <div className="gallery">
+                <div className="Galeria">
                     {photo.map((foto) => (
-                        <div key={foto.id} className="gallery-item">
+                        <div key={foto.id} className="Galeria-container">
                             <Photo {...foto} />
                         </div>
                     ))}
                 </div>
             ) : (
-                <p>No hay fotos disponibles</p>
+                !error && <p>No hay fotos disponibles</p>
             )}
-            </div>
+        </div>
     );
-}
+};
 
 export default Home;

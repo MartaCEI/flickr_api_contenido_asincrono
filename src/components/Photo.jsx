@@ -1,12 +1,14 @@
 
 const Photo = ({ id, server, secret, title }) => (
     <>
-        <img
-            src={`https://live.staticflickr.com/${server}/${id}_${secret}_m.jpg`}
-            alt={title}
-        />
-        <div className="gallery-info">
-            <p className="gallery-title">{title}</p>
+        <div className="Galeria-div">
+            <img className="Galeria-img"
+                src={`https://live.staticflickr.com/${server}/${id}_${secret}_m.jpg`}
+                alt={title}
+            />
+        </div>
+        <div className="Galeria-div">
+            <p className="Galeria-titulo">{title}</p>
         </div>
     </>
 );
